@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.iOS", "Sigma\Sigma.iO
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Sigma.Database", "Sigma.Database\Sigma.Database.sqlproj", "{4BFB188E-7298-41A5-8D35-B88D036771BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.Project", "Sigma.Project\Sigma.Project.csproj", "{10A4D455-3953-4FDC-A1B1-9C99DA92D80E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.Android", "Sigma.Project\Sigma.Android.csproj", "{10A4D455-3953-4FDC-A1B1-9C99DA92D80E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
