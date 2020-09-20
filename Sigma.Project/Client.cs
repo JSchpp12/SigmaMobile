@@ -17,14 +17,17 @@ namespace Sigma.Project
     {
         private int portNum = 1234;
 
-        private IPHostEntry iphost; 
-        private IPAddress ipAddr;
+        private IPHostEntry ipHost; 
+        private IPAddress ipAddress;
         private IPEndPoint localEndPoint;
         private Socket sender; 
 
+        private int currentIP = 0; 
         //unused initializer...might want to scan ports or something like that - unsure at this moment 
         public Client()
         {
+            ipHost = Dns.GetHostEntry(Dns.GetHostName());
+            ipAddress = ipHost.AddressList[0]; 
 
         }
 
@@ -41,5 +44,27 @@ namespace Sigma.Project
             }
         }
 
+        internal static Int64 AddressToInt(IPAddress addr)
+        {
+            byte[] addressBits = addr.GetAddressBytes();
+
+            Int64 retval = 0;
+            for (int i = 0; i < addressBits.Length; i++)
+            {
+                retval = (retval << 8) + (int)addressBits[i];
+            }
+
+            return retval;
+        }
+
+        internal static Int64 AddressToInt(string addr)
+        {
+            return AddressToInt(IPAddress.Parse(addr));
+        }
+
+        internal static IPAddress IntToAddress(Int64 addr)
+        {
+            return IPAddress.Parse(addr.ToString());
+        }
     }
 }
