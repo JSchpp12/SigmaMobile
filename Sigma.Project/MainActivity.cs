@@ -24,13 +24,19 @@ namespace Sigma.Project
             SetContentView(Resource.Layout.activity_main);
 
             txtFeedback = FindViewById<TextView>(Resource.Id.connectionStatus); //get the text object from the main page 
-
+            assignEventHandlers(); 
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        
+        //go through each page element and give it an eventhandler if applicable
+        private void assignEventHandlers()
+        {
+            FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
         }
 
         #region EventHandlers
