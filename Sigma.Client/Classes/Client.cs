@@ -4,16 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
-namespace Sigma.Project
+namespace Sigma.Networking
 {
-    class Client
+    public class Client
     {
         private int portNum = 1234;
 
@@ -26,9 +20,10 @@ namespace Sigma.Project
         //unused initializer...might want to scan ports or something like that - unsure at this moment 
         public Client()
         {
-            ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            ipAddress = ipHost.AddressList[0]; 
 
+            ipHost = Dns.GetHostEntry(IPAddress.Parse("192.168.1.8")); 
+            ipAddress = ipHost.AddressList[0]; 
+            
         }
 
         public void Initilize()
@@ -43,6 +38,12 @@ namespace Sigma.Project
 
             }
         }
+
+        //sends a message to the port on the designated address
+        //private bool TestAddress(IPAddress tempIP)
+        //{
+
+        //}
 
         internal static Int64 AddressToInt(IPAddress addr)
         {
