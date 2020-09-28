@@ -20,7 +20,6 @@ namespace Sigma.Networking
         //unused initializer...might want to scan ports or something like that - unsure at this moment 
         public Client()
         {
-
             ipHost = Dns.GetHostEntry(IPAddress.Parse("192.168.1.8")); 
             ipAddress = ipHost.AddressList[0]; 
             
@@ -67,5 +66,6 @@ namespace Sigma.Networking
         {
             return IPAddress.Parse(addr.ToString());
         }
+
     }
 }
