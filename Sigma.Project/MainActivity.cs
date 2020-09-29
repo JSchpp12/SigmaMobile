@@ -11,7 +11,7 @@ using Sigma.Networking;
 
 namespace Sigma.Project
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
     public class MainActivity : AppCompatActivity
     {
         private TextView txtFeedback;
