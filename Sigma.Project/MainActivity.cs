@@ -8,7 +8,8 @@ using System.Net.Sockets;
 using System.Text;
 using System;
 using System.Threading; 
-using Sigma.Networking; 
+using Sigma.Networking;
+using System.Threading.Tasks;
 
 namespace Sigma.Project
 {
@@ -45,8 +46,7 @@ namespace Sigma.Project
         async void OnConnectClicked(object sender, EventArgs args)
         {
             txtFeedback.Text = "connecting to server....";
-            clientService = new Client();
-            
+            bool connected = await clientService.StartClientAsync(); 
         }
         #endregion
     }

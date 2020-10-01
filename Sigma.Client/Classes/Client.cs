@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Sigma.Networking.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Sigma.Networking
 {
@@ -40,11 +42,47 @@ namespace Sigma.Networking
         //unused initializer...might want to scan ports or something like that - unsure at this moment 
         public Client()
         {
-            StartClient(); 
+
         }
 
-        private static void StartClient()
+        
+        public async Task<bool> StartClientAsync()
         {
+
+            bool connected = false;
+            Task<bool> searchHostTask = searchForHostAsync();
+
+            connected = await searchHostTask;
+
+            return connected; 
+
+
+            //// Send test data to the remote device.  
+            //Send(client, "This is a test \n");
+            //sendDone.WaitOne();
+
+            //// Receive the response from the remote device.  
+            //Receive(client);
+            //receiveDone.WaitOne();
+
+            //// Write the response to the console.  
+            //Console.WriteLine("Response received : {0}", response);
+
+            //// Release the socket.  
+            //client.Shutdown(SocketShutdown.Both);
+            //client.Close();
+        }
+
+        private async Task<bool> searchForHostAsync()
+        {
+            int ipCore = 0;
+            Sigma_IpAddress currentIP; 
+            while (ipCore < 200)
+            {
+                
+                ipCore++; 
+            }
+
             IPHostEntry ipHost = Dns.GetHostEntry(IPAddress.Parse("192.168.1.24"));
             IPAddress ipAddress = ipHost.AddressList[0];
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
@@ -57,20 +95,14 @@ namespace Sigma.Networking
             client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
             connectDone.WaitOne();
 
-            // Send test data to the remote device.  
-            Send(client, "This is a test<EOF>");
-            sendDone.WaitOne();
-
-            // Receive the response from the remote device.  
-            Receive(client);
-            receiveDone.WaitOne();
-
-            // Write the response to the console.  
-            Console.WriteLine("Response received : {0}", response);
-
-            // Release the socket.  
-            client.Shutdown(SocketShutdown.Both);
-            client.Close();
+            if (client.Connected)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private static void ConnectCallback(IAsyncResult ar)
