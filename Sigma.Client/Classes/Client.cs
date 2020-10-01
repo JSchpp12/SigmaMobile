@@ -38,8 +38,13 @@ namespace Sigma.Networking
 
         private static String response = String.Empty; 
 
-        private int currentIP = 0; 
+        private int currentIP = 0;
         //unused initializer...might want to scan ports or something like that - unsure at this moment 
+
+        private IPAddress currentAddress;
+        private IPEndPoint remoteEP;
+        private Socket client;
+
         public Client()
         {
 
@@ -76,33 +81,23 @@ namespace Sigma.Networking
         private async Task<bool> searchForHostAsync()
         {
             int ipCore = 0;
-            Sigma_IpAddress currentIP; 
+            Sigma_IpAddress currentIP = new Sigma_IpAddress("192.168.1.0");
+
             while (ipCore < 200)
             {
-                
+                currentIP = new Sigma_IpAddress("192.168.1." + ipCore.ToString()); 
+                currentAddress = currentIP.toIP();
+                remoteEP = new IPEndPoint(currentAddress, port);
+                client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                //connect to the remote endpoint
+                client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
+                connectDone.WaitOne();
+
+                if (client.Connected)
+                    return true; 
                 ipCore++; 
             }
-
-            IPHostEntry ipHost = Dns.GetHostEntry(IPAddress.Parse("192.168.1.24"));
-            IPAddress ipAddress = ipHost.AddressList[0];
-            IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-
-
-            //create TCP socket 
-            Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            //connect to the remote endpoint
-            client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
-            connectDone.WaitOne();
-
-            if (client.Connected)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false; 
         }
 
         private static void ConnectCallback(IAsyncResult ar)
