@@ -8,7 +8,7 @@ namespace Sigma.Networking.Classes
 {
     class Sigma_IpAddress
     {
-        private int[] address; 
+        private int[] address = new int[4]; 
 
         public Sigma_IpAddress()
         {

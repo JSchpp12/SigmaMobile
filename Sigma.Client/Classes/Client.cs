@@ -44,22 +44,12 @@ namespace Sigma.Networking
         private IPAddress currentAddress;
         private IPEndPoint remoteEP;
         private Socket client;
-
-        public Client()
-        {
-
-        }
-
         
         public async Task<bool> StartClientAsync()
         {
-
-            bool connected = false;
-            Task<bool> searchHostTask = searchForHostAsync();
-
-            connected = await searchHostTask;
-
-            return connected; 
+            Task<bool> connected = searchForHostAsync();
+            bool success = await connected;
+            return success; 
 
 
             //// Send test data to the remote device.  
@@ -78,23 +68,29 @@ namespace Sigma.Networking
             //client.Close();
         }
 
-        private async Task<bool> searchForHostAsync()
+        public async Task<bool> searchForHostAsync()
         {
             int ipCore = 0;
-            Sigma_IpAddress currentIP = new Sigma_IpAddress("192.168.1.0");
+            string currentIP = "192.168.1.0"; 
 
+            Console.WriteLine("Beginning search for host"); 
             while (ipCore < 200)
             {
-                currentIP = new Sigma_IpAddress("192.168.1." + ipCore.ToString()); 
-                currentAddress = currentIP.toIP();
+                currentIP = "192.168.1." + ipCore.ToString(); 
+                Console.WriteLine(currentIP);
+                currentAddress = IPAddress.Parse(currentIP); 
                 remoteEP = new IPEndPoint(currentAddress, port);
                 client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 //connect to the remote endpoint
                 client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
-                connectDone.WaitOne();
+                Thread.Sleep(500); 
 
                 if (client.Connected)
-                    return true; 
+                {
+                    Console.WriteLine("Found host at " + currentIP); 
+                    return true;
+                }
+
                 ipCore++; 
             }
             return false; 
