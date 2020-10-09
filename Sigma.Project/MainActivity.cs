@@ -7,7 +7,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System;
-using Sigma.Networking; 
+using System.Threading; 
+using Sigma.Networking;
+using System.Threading.Tasks;
+using Java.Nio.Channels;
 
 namespace Sigma.Project
 {
@@ -23,7 +26,7 @@ namespace Sigma.Project
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-
+            clientService = new Client(); 
             txtFeedback = FindViewById<TextView>(Resource.Id.connectionStatus); //get the text object from the main page 
             assignEventHandlers(); 
         }
@@ -43,8 +46,19 @@ namespace Sigma.Project
         #region EventHandlers
         async void OnConnectClicked(object sender, EventArgs args)
         {
-            clientService = new Client();
-            txtFeedback.Text = "CLICKED"; 
+            txtFeedback.Text = "connecting to server....";
+            //Task<bool> connectionRoutine = clientService.StartClientAsync();
+            //bool connected = await connectionRoutine; 
+
+            bool connected = await Task.Run(clientService.StartClientAsync); 
+            if (connected)
+            {
+                txtFeedback.Text = "Connected";
+            }
+            else
+            {
+                txtFeedback.Text = "Unable to Find Server"; 
+            }
         }
         #endregion
     }
