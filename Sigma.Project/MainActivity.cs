@@ -46,18 +46,26 @@ namespace Sigma.Project
         #region EventHandlers
         async void OnConnectClicked(object sender, EventArgs args)
         {
-            txtFeedback.Text = "connecting to server....";
-            //Task<bool> connectionRoutine = clientService.StartClientAsync();
-            //bool connected = await connectionRoutine; 
-
-            bool connected = await Task.Run(clientService.StartClientAsync); 
-            if (connected)
+            
+            if (clientService.isConnected)
             {
-                txtFeedback.Text = "Connected";
+                txtFeedback.Text = "connecting to server....";
+                //Task<bool> connectionRoutine = clientService.StartClientAsync();
+                //bool connected = await connectionRoutine; 
+
+                bool connected = await Task.Run(clientService.StartClientAsync);
+                if (connected)
+                {
+                    txtFeedback.Text = "Connected";
+                }
+                else
+                {
+                    txtFeedback.Text = "Unable to Find Server";
+                }
             }
             else
             {
-                txtFeedback.Text = "Unable to Find Server"; 
+                txtFeedback.Text = "Not Connected to Newtowrk"; 
             }
         }
         #endregion
