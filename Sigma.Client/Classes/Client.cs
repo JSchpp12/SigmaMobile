@@ -24,7 +24,6 @@ namespace Sigma.Networking
 
     public class Client
     {
-        public bool isConnected = false; 
 
         // The port number for the remote device.  
         private const int port = 11000;
@@ -46,10 +45,6 @@ namespace Sigma.Networking
         private IPEndPoint remoteEP;
         private Socket client;
         
-        public Client()
-        {
-            this.isConnected = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable(); 
-        }
         public async Task<bool> StartClientAsync()
         {
             Task<bool> connected = searchForHostAsync();
@@ -76,43 +71,27 @@ namespace Sigma.Networking
         public async Task<bool> searchForHostAsync()
         {
             int ipCore = 0;
-            int ipSec = 0;
-            string currentIP = string.Empty; 
-            var host = Dns.GetHostEntry(Dns.GetHostName());
+            string currentIP = "192.168.1.0"; 
 
             Console.WriteLine("Beginning search for host"); 
-            while(ipSec < 2)
+            while (ipCore < 200)
             {
-                while (ipCore < 255)
+                currentIP = "192.168.1." + ipCore.ToString(); 
+                Console.WriteLine(currentIP);
+                currentAddress = IPAddress.Parse(currentIP); 
+                remoteEP = new IPEndPoint(currentAddress, port);
+                client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                //connect to the remote endpoint
+                client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
+                Thread.Sleep(500); 
+
+                if (client.Connected)
                 {
-                    currentIP = "192.168." + ipSec.ToString() + "." + ipCore.ToString();
-                    Console.WriteLine(currentIP);
-                    currentAddress = IPAddress.Parse(currentIP);
-                    remoteEP = new IPEndPoint(currentAddress, port);
-                    client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    //connect to the remote endpoint
-                    client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
-                    Thread.Sleep(50);
-
-
-                    if (client.Connected)
-                    {
-                        Console.WriteLine("Found host at " + currentIP + "sending hello.");
-
-                        Send(client, "Sigma Client\n");
-                        sendDone.WaitOne(10000); //1 second 
-
-                        Receive(client);
-                        receiveDone.WaitOne(10000);
-
-                        if (response == "Sigma Host")
-                        {
-                            return true;
-                        }
-                    }
-                    ipCore++;
+                    Console.WriteLine("Found host at " + currentIP); 
+                    return true;
                 }
-                ipSec++; 
+
+                ipCore++; 
             }
             return false; 
         }
