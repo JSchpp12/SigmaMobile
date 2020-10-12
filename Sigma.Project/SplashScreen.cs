@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Media; 
 
 
 namespace Sigma.Project
@@ -17,11 +18,24 @@ namespace Sigma.Project
     [Activity(Label="Sigma",MainLauncher =true,Theme="@style/MyTheme.Splash",Icon="@drawable/Icon",NoHistory=true)]
     public class SplashScreen : Activity
     {
+        private MediaPlayer mediaPlayer = new MediaPlayer(); 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            Task.Delay(8000);
+            try
+            {
+                mediaPlayer = MediaPlayer.Create(this, Resource.Raw.Startup);
+                mediaPlayer.Start();
+                while (mediaPlayer.IsPlaying)
+                {
+                    Thread.Sleep(100);
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message); 
+            }
+
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
             //Task startupWork = new Task(() => { SimulateStartup(); });
         }
