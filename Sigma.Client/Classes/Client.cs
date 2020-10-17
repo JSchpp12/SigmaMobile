@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,28 +45,30 @@ namespace Sigma.Networking
         private IPAddress currentAddress;
         private IPEndPoint remoteEP;
         private Socket client;
-        
+        private static int timeout = 10000;
+
+        public bool IsConnected()
+        {
+            if (this.client != null)
+            {
+                return client.Connected;
+            }
+            else
+            {
+                return false; 
+            }
+        }
+
         public async Task<bool> StartClientAsync()
         {
             Task<bool> connected = searchForHostAsync();
             bool success = await connected;
             return success; 
+        }
 
-
-            //// Send test data to the remote device.  
-            //Send(client, "This is a test \n");
-            //sendDone.WaitOne();
-
-            //// Receive the response from the remote device.  
-            //Receive(client);
-            //receiveDone.WaitOne();
-
-            //// Write the response to the console.  
-            //Console.WriteLine("Response received : {0}", response);
-
-            //// Release the socket.  
-            //client.Shutdown(SocketShutdown.Both);
-            //client.Close();
+        public async void ShutdownAsync()
+        {
+            await Task.Run(this._shutdownAsync);
         }
 
         public async Task<bool> searchForHostAsync()
@@ -95,6 +98,37 @@ namespace Sigma.Networking
             }
             return false; 
         }
+
+        public async Task<String> GetServerTimeAsync()
+        {
+            Message message;
+
+            if (!client.Connected)
+            {
+                StartClientAsync(); 
+            }
+
+            //send request
+            Send(client, "REQUEST:TIME");
+            //read response
+            Receive(client);
+            receiveDone.WaitOne(timeout);
+            //convert messsage into a DateTime 
+            message = new Message(response); 
+            if (message.IsValid() && message.IsTime())
+            {
+                return response;
+            }
+            else
+            {
+                return "ERROR"; 
+            }
+        }
+
+        //private async Task<bool> WaitForResponseAsync()
+        //{
+
+        //}
 
         private static void ConnectCallback(IAsyncResult ar)
         {
@@ -204,6 +238,20 @@ namespace Sigma.Networking
             }
         }
 
+        //call to release the port 
+        private async void _shutdownAsync()
+        {
+            try
+            {
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         internal static Int64 AddressToInt(IPAddress addr)
         {
             byte[] addressBits = addr.GetAddressBytes();
@@ -226,6 +274,5 @@ namespace Sigma.Networking
         {
             return IPAddress.Parse(addr.ToString());
         }
-
     }
 }

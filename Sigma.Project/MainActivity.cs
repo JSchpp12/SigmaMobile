@@ -46,19 +46,29 @@ namespace Sigma.Project
         #region EventHandlers
         async void OnConnectClicked(object sender, EventArgs args)
         {
-            txtFeedback.Text = "connecting to server....";
-            //Task<bool> connectionRoutine = clientService.StartClientAsync();
-            //bool connected = await connectionRoutine; 
+            if (!clientService.IsConnected())
+            {
+                txtFeedback.Text = "connecting to server....";
+                //Task<bool> connectionRoutine = clientService.StartClientAsync();
+                //bool connected = await connectionRoutine; 
 
-            bool connected = await Task.Run(clientService.StartClientAsync); 
-            if (connected)
-            {
-                txtFeedback.Text = "Connected";
+                bool connected = await Task.Run(clientService.StartClientAsync);
+                if (connected)
+                {
+                    txtFeedback.Text = "Connected";
+                }
+                else
+                {
+                    txtFeedback.Text = "Unable to Find Server";
+                }
             }
-            else
-            {
-                txtFeedback.Text = "Unable to Find Server"; 
-            }
+        }
+
+        async void RequestServerTime(object sender, EventArgs args)
+        {
+            txtFeedback.Text = "Requesting time from server...."; 
+            String serverTime = await Task.Run(clientService.GetServerTimeAsync);
+            txtFeedback.Text = serverTime; 
         }
         #endregion
     }
