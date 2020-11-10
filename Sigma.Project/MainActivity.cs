@@ -16,7 +16,7 @@ using Android.Graphics.Drawables;
 
 namespace Sigma.Project
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/Theme.Design.Light.NoActionBar")]
+    [Activity(Label = "@string/app_name", Theme = "@style/Theme.Design.NoActionBar")]
     public class MainActivity : AppCompatActivity
     {
         private TextView txtFeedback;
