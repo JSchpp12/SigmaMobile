@@ -11,14 +11,17 @@ using System.Threading;
 using Sigma.Networking;
 using System.Threading.Tasks;
 using Java.Nio.Channels;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 
 namespace Sigma.Project
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme")]
+    [Activity(Label = "@string/app_name", Theme = "@style/Theme.Design.Light.NoActionBar")]
     public class MainActivity : AppCompatActivity
     {
         private TextView txtFeedback;
-        private Client clientService; 
+        private Client clientService;
+        private bool connectedTransitionStatus = false; 
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,10 +29,13 @@ namespace Sigma.Project
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            clientService = new Client(); 
-            txtFeedback = FindViewById<TextView>(Resource.Id.connectionStatus); //get the text object from the main page 
-            assignEventHandlers(); 
+            clientService = new Client();
+            
+
+
+            assignEventHandlers();
         }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -37,10 +43,33 @@ namespace Sigma.Project
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         
+        //update the connection status bar on the UI with new text and new color
+        async void updateConnectionStatusBar(object sender, EventArgs args)
+        {
+            TextView connectionView = (TextView)FindViewById(Resource.Id.connectionStatus);
+            Drawable drawable = connectionView.Background; 
+            if (drawable.GetType() == typeof(TransitionDrawable))
+            {
+                if (!connectedTransitionStatus)
+                {
+                    ((TransitionDrawable)drawable).StartTransition(500); 
+                    connectedTransitionStatus = true;
+                    connectionView.Text = "Connected";
+                }
+                else
+                {
+                    ((TransitionDrawable)drawable).ReverseTransition(500);
+                    connectedTransitionStatus = false;
+                    connectionView.Text = "Disconnected";
+                }     
+            }
+        }
+
         //go through each page element and give it an eventhandler if applicable
         private void assignEventHandlers()
         {
-            FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
+            //FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
+            FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar; 
         }
 
         #region EventHandlers
