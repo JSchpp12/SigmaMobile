@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:rowCount="10"
-    android:columnCount="4"
     android:background="#303030"
     android:id="@+id/main_layout">
     <TextView
@@ -14,10 +12,66 @@
         android:layout_height="50dp"
         android:layout_column="0"
         android:layout_row="0"
-        android:text="Disconnected"
         android:textAlignment="center"
         android:background="@drawable/statustransition"
         android:id="@+id/connectionStatus"
         android:textStyle="bold|normal"
-        android:textSize="20dp" />
-</GridLayout>
+        android:textSize="20dp"
+        android:text="Disconnected" />
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/connectionStatus">
+         <LinearLayout
+            android:id="@+id/buttonLayout_topButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            >
+                <Button
+                    android:text="1"
+                    android:id="@+id/connection_button1"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                />
+                <Button
+                    android:text="2"
+                    android:id="@+id/connection_button2"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/buttonLayout_topButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/buttonLayout_topButtons"
+            android:gravity="center_horizontal"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            >
+                <Button
+                    android:text="3"
+                    android:id="@+id/connection_button3"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                />
+                <Button
+                    android:text="4"
+                    android:id="@+id/connection_button4"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
