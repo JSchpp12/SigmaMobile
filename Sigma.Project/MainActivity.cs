@@ -114,14 +114,15 @@ namespace Sigma.Project
 
         async void OnChennelSelect(object sender, EventArgs args)
         {
-            var clickedButton = (Button)sender; 
-            for (int i = 0; i<buttons.Length; i++)
+            var clickedButton = (Button)sender;
+            for (int i = 0; i < buttons.Length; i++)
             {
                 if ((buttons[i].button.Id == clickedButton.Id) || ((buttons[i].button.Id != clickedButton.Id) && buttons[i].clicked))
                 {
                     TransitionButton(i);
                 }
             }
+        }
             
         async void RequestServerTime(object sender, EventArgs args)
         {
