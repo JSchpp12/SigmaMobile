@@ -23,26 +23,26 @@ namespace Sigma.Project
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
+            Task.Run(PlayStartupSoundAsync);
+        }
+
+        async void PlayStartupSoundAsync()
+        {
             try
             {
                 mediaPlayer = MediaPlayer.Create(this, Resource.Raw.Startup);
                 mediaPlayer.Start();
                 while (mediaPlayer.IsPlaying)
                 {
-                    Thread.Sleep(100);
+                    await Task.Delay(500);
                 }
-            }catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message); 
+                mediaPlayer.Release();
             }
-
-            StartActivity(new Intent(Application.Context, typeof(MainActivity)));
-            //Task startupWork = new Task(() => { SimulateStartup(); });
-        }
-
-        async void SimulateStartup()
-        {
-            await Task.Delay(8000); // Simulate a bit of startup work.
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
         }
     }

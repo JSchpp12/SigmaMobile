@@ -16,12 +16,13 @@ namespace Sigma.Networking.Classes
         private msgType type; 
         private string message; 
 
-        Message(string inMessage)
+        public Message(string inMessage)
         {
             this.message = inMessage; 
         }
 
         public bool IsValid() { return this.type.isValid;  }
+        public bool IsTime() { return this.type.isTime; }
         private void processMessage() 
         {
             if (this.message.Contains("TIME:"))
