@@ -17,19 +17,34 @@
         android:id="@+id/connectionStatus"
         android:textStyle="bold|normal"
         android:textSize="20dp"
-        android:text="Disconnected" />
+        android:text="Disconnected"/>
     <LinearLayout
         android:id="@+id/fullContainer"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/connectionStatus">
+        <RelativeLayout
+            android:id="@+id/ConnectionInfromation_Container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/connectionReadout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Connected to: Channel 1"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="25dp"/>
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/connectionMeterContainer"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:paddingBottom="30dp">
             <ImageView
                 android:id="@+id/connectionIndicator_1"
                 android:layout_width="wrap_content"
@@ -60,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/connectionmeter_transition"
                 android:layout_margin="5dp"/>
-         </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
@@ -73,22 +88,19 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                >
+                android:paddingRight="25dp">
                     <Button
                         android:text="1"
                         android:id="@+id/connection_button1"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"
-                    />
+                        android:layout_margin="5dp"/>
                     <Button
                         android:text="2"
                         android:id="@+id/connection_button2"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"
-                    />
+                        android:layout_margin="5dp"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/buttonLayout_bottomButtons"
@@ -98,22 +110,19 @@
                 android:layout_below="@id/buttonLayout_topButtons"
                 android:gravity="center_horizontal"
                 android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                >
+                android:paddingRight="25dp">
                     <Button
                         android:text="3"
                         android:id="@+id/connection_button3"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"
-                    />
+                        android:layout_margin="5dp"/>
                     <Button
                         android:text="4"
                         android:id="@+id/connection_button4"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"
-                    />
+                        android:layout_margin="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
