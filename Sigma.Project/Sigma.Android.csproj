@@ -153,6 +153,24 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\connectionMeter_transition.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drawable\Archive\channelSelect_button.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drawable\Archive\channelSelect_button_pressed.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\channelSelect_button_nonclicked.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\channelSelect_button_clicked.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\channelSelect_button_transition.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\SelectedChannel_boarder.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
     Other similar extension points exist, see Microsoft.Common.targets.

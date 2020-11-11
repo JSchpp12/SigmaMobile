@@ -23,58 +23,90 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/connectionStatus">
+        android:layout_below="@+id/connectionStatus">
         <RelativeLayout
             android:id="@+id/ConnectionInfromation_Container"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-            <TextView
-                android:id="@+id/connectionReadout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Connected to: Channel 1"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="25dp"/>
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/connectionMeterContainer"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingBottom="30dp">
-            <ImageView
-                android:id="@+id/connectionIndicator_1"
+            android:gravity="center"
+            android:paddingTop="30dp"
+            android:paddingBottom="20dp">
+            <TextView
+                android:id="@+id/lbl_connection"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:text="Connected To:"
+                android:textSize="20dp"
+                android:textColor="#F1ECEC"/>
+            <TextView
+                android:id="@+id/connectionReadout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_connection"
+                android:gravity="center"
+                android:text="Channel 1"
+                android:textColor="#F1ECEC"
+                android:textStyle="bold"
+                android:textSize="25dp"
+                android:background="@drawable/selectedchannel_boarder"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp" />
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/connectionMeter_Container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/lbl_connectionMeter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Connection Quality:"
+                android:textColor="#F1ECEC"
+                android:textSize="15dp"
+                android:paddingBottom="5dp"/>
+            <LinearLayout
+                android:id="@+id/connectionMeterLevel_Container"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/connectionmeter_transition"
-                android:layout_margin="5dp"/>
-            <ImageView
-                android:id="@+id/connectionIndicator_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/connectionmeter_transition"
-                android:layout_margin="5dp"/>
-            <ImageView
-                android:id="@+id/connectionIndicator_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/connectionmeter_transition"
-                android:layout_margin="5dp"/>
-            <ImageView
-                android:id="@+id/connectionIndicator_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/connectionmeter_transition"
-                android:layout_margin="5dp"/>
-            <ImageView
-                android:id="@+id/connectionIndicator_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/connectionmeter_transition"
-                android:layout_margin="5dp"/>
+                android:layout_gravity="center"
+                android:layout_below="@+id/lbl_connectionMeter"
+                android:paddingBottom="30dp">
+                <ImageView
+                    android:id="@+id/connectionIndicator_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/connectionmeter_transition"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/connectionIndicator_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/connectionmeter_transition"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/connectionIndicator_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/connectionmeter_transition"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/connectionIndicator_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/connectionmeter_transition"
+                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:id="@+id/connectionIndicator_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/connectionmeter_transition"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/buttonLayout"
@@ -94,20 +126,22 @@
                         android:id="@+id/connection_button1"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"/>
+                        android:layout_margin="5dp"
+                        android:background="@drawable/channelSelect_button_transition"/>
                     <Button
                         android:text="2"
                         android:id="@+id/connection_button2"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"/>
+                        android:layout_margin="5dp"
+                        android:background="@drawable/channelSelect_button_transition"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/buttonLayout_bottomButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_below="@id/buttonLayout_topButtons"
+                android:layout_below="@+id/buttonLayout_topButtons"
                 android:gravity="center_horizontal"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp">
@@ -116,13 +150,15 @@
                         android:id="@+id/connection_button3"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"/>
+                        android:layout_margin="5dp"
+                        android:background="@drawable/channelSelect_button_transition"/>
                     <Button
                         android:text="4"
                         android:id="@+id/connection_button4"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:layout_margin="5dp"/>
+                        android:layout_margin="5dp"
+                        android:background="@drawable/channelSelect_button_transition"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

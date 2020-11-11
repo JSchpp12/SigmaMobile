@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Java.Nio.Channels;
 using Android.Graphics;
 using Android.Graphics.Drawables;
+using Android.Support.Design.Animation;
 
 namespace Sigma.Project
 {
@@ -21,7 +22,14 @@ namespace Sigma.Project
     {
         private TextView txtFeedback;
         private Client clientService;
-        private bool connectedTransitionStatus = false; 
+        private bool connectedTransitionStatus = false;
+        private buttonContainer[] buttons = new buttonContainer[4]; 
+
+        private struct buttonContainer
+        {
+            public Button button;
+            public bool clicked; 
+        }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -30,10 +38,16 @@ namespace Sigma.Project
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
             clientService = new Client();
-            
 
-
-            assignEventHandlers();
+            buttons[0].button = FindViewById<Button>(Resource.Id.connection_button1);
+            buttons[0].clicked = false; 
+            buttons[1].button = FindViewById<Button>(Resource.Id.connection_button2);
+            buttons[1].clicked = false; 
+            buttons[2].button = FindViewById<Button>(Resource.Id.connection_button3);
+            buttons[2].clicked = false;
+            buttons[3].button = FindViewById<Button>(Resource.Id.connection_button4);
+            buttons[3].clicked = false; 
+            assignEventHandlers();   
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -69,7 +83,11 @@ namespace Sigma.Project
         private void assignEventHandlers()
         {
             //FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
-            FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar; 
+            FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar;
+            FindViewById<Button>(Resource.Id.connection_button1).Click += OnChennelSelect;
+            FindViewById<Button>(Resource.Id.connection_button2).Click += OnChennelSelect;
+            FindViewById<Button>(Resource.Id.connection_button3).Click += OnChennelSelect;
+            FindViewById<Button>(Resource.Id.connection_button4).Click += OnChennelSelect;
         }
 
         #region EventHandlers
@@ -89,6 +107,37 @@ namespace Sigma.Project
                 txtFeedback.Text = "Unable to Find Server"; 
             }
         }
+
+        async void OnChennelSelect(object sender, EventArgs args)
+        {
+            var clickedButton = (Button)sender; 
+            for (int i = 0; i<buttons.Length; i++)
+            {
+                if ((buttons[i].button.Id == clickedButton.Id) || ((buttons[i].button.Id != clickedButton.Id) && buttons[i].clicked))
+                {
+                    TransitionButton(i);
+                }
+            }
+        }
         #endregion
+
+        private void TransitionButton(int target)
+        {
+            Button buttonView = buttons[target].button; 
+            Drawable drawable = buttonView.Background;
+            if (drawable.GetType() == typeof(TransitionDrawable))
+            {
+                if (buttons[target].clicked)
+                {
+                    ((TransitionDrawable)drawable).ReverseTransition(500);
+                    buttons[target].clicked = false;
+                }
+                else
+                {
+                    ((TransitionDrawable)drawable).StartTransition(500);
+                    buttons[target].clicked = true;
+                }
+            }
+        }
     }
 }
