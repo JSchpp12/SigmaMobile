@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sigma.Networking.Classes
 {
-    class Message
+    public class Message
     {
         struct msgType
         {
