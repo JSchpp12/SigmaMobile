@@ -47,7 +47,8 @@ namespace Sigma.Project
             buttons[2].clicked = false;
             buttons[3].button = FindViewById<Button>(Resource.Id.connection_button4);
             buttons[3].clicked = false; 
-            assignEventHandlers();   
+            assignEventHandlers();
+            beginSearchForHostAsync(); 
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -56,7 +57,29 @@ namespace Sigma.Project
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+        public async Task beginSearchForHostAsync()
+        {
+            await Task.Run(scanNetworkAsync); 
+        }
         
+        private async Task scanNetworkAsync()
+        {
+            var connectionBar = FindViewById<TextView>(Resource.Id.connectionStatus);
+            connectionBar.Text = "Searching for host...";
+
+            var connected = await Task.Run(clientService.StartClientAsync);
+            updateConnectionStatus(connected); 
+            if (connected)
+            {
+                connectionBar.Text = "Connected";
+            }
+            else
+            {
+                connectionBar.Text = "Not Connected"; 
+            }
+        }
+
         //update the connection status bar on the UI with new text and new color
         async void updateConnectionStatusBar(object sender, EventArgs args)
         {
@@ -79,11 +102,33 @@ namespace Sigma.Project
             }
         }
 
+        private void updateConnectionStatus(bool connected)
+        {
+            TextView connectionView = (TextView)FindViewById(Resource.Id.connectionStatus);
+            Drawable drawable = connectionView.Background;
+            if (drawable.GetType() == typeof(TransitionDrawable))
+            {
+                if (!connected)
+                {
+                    ((TransitionDrawable)drawable).StartTransition(500);
+                    connectedTransitionStatus = true;
+                    connectionView.Text = "Connected";
+                }
+                else
+                {
+                    ((TransitionDrawable)drawable).ReverseTransition(500);
+                    connectedTransitionStatus = false;
+                    connectionView.Text = "Disconnected";
+                }
+            }
+            
+        }
+
         //go through each page element and give it an eventhandler if applicable
         private void assignEventHandlers()
         {
             //FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
-            FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar;
+            //FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar;
             FindViewById<Button>(Resource.Id.connection_button1).Click += OnChennelSelect;
             FindViewById<Button>(Resource.Id.connection_button2).Click += OnChennelSelect;
             FindViewById<Button>(Resource.Id.connection_button3).Click += OnChennelSelect;
@@ -100,6 +145,7 @@ namespace Sigma.Project
                 //bool connected = await connectionRoutine; 
 
                 bool connected = await Task.Run(clientService.StartClientAsync);
+
                 if (connected)
                 {
                     txtFeedback.Text = "Connected";

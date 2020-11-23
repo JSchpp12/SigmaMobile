@@ -27,7 +27,7 @@ namespace Sigma.Networking
     {
 
         // The port number for the remote device.  
-        private const int port = 11000;
+        private const int port = 10005;
 
         // ManualResetEvent instances signal completion.  
         private static ManualResetEvent connectDone =
@@ -79,6 +79,10 @@ namespace Sigma.Networking
             Console.WriteLine("Beginning search for host"); 
             while (ipCore < 200)
             {
+                if (ipCore == 36)
+                {
+                    Console.WriteLine("HERE"); 
+                }
                 currentIP = "192.168.1." + ipCore.ToString(); 
                 Console.WriteLine(currentIP);
                 currentAddress = IPAddress.Parse(currentIP); 
