@@ -108,7 +108,7 @@ namespace Sigma.Project
             Drawable drawable = connectionView.Background;
             if (drawable.GetType() == typeof(TransitionDrawable))
             {
-                if (!connected)
+                if (connected)
                 {
                     ((TransitionDrawable)drawable).StartTransition(500);
                     connectedTransitionStatus = true;

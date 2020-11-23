@@ -90,14 +90,21 @@ namespace Sigma.Networking
                 client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 //connect to the remote endpoint
                 client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
-                Thread.Sleep(500); 
+                Thread.Sleep(300); 
+
 
                 if (client.Connected)
                 {
-                    Console.WriteLine("Found host at " + currentIP); 
-                    return true;
+                    Send(client, "HELLO");
+                    Thread.Sleep(100);
+                    Receive(client);
+                    receiveDone.WaitOne(timeout); 
+                    if(response == "HELLO<EOF>")
+                    {
+                        Console.WriteLine("Found host at " + currentIP);
+                        return true;
+                    }
                 }
-
                 ipCore++; 
             }
             return false; 
@@ -215,6 +222,7 @@ namespace Sigma.Networking
         private static void Send(Socket client, String data)
         {
             // Convert the string data to byte data using ASCII encoding.  
+            data += "<EOF>";
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
             // Begin sending the data to the remote device.  
