@@ -85,31 +85,38 @@ namespace Sigma.Networking
                 {
                     Console.WriteLine("HERE"); 
                 }
-                currentIP = "192.168.1." + ipCore.ToString(); 
-                Console.WriteLine(currentIP);
-                currentAddress = IPAddress.Parse(currentIP); 
-                remoteEP = new IPEndPoint(currentAddress, port);
-                client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                //connect to the remote endpoint
-                client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
-                Thread.Sleep(300); 
-
-
-                if (client.Connected)
+                try
                 {
-                    Send(client, "HELLO");
-                    Thread.Sleep(100);
-                    Receive(client);
-                    receiveDone.WaitOne(timeout); 
-                    if(response == "HELLO<EOF>")
+                    currentIP = "192.168.1." + ipCore.ToString();
+                    Console.WriteLine(currentIP);
+                    currentAddress = IPAddress.Parse(currentIP);
+                    remoteEP = new IPEndPoint(currentAddress, port);
+                    client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    //connect to the remote endpoint
+                    client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
+                    Thread.Sleep(300);
+
+
+                    if (client.Connected)
                     {
-                        Console.WriteLine("Found host at " + currentIP);
-                        serverIP = currentIP; 
-                        return true;
+                        Send(client, "HELLO");
+                        sendDone.WaitOne(timeout);
+                        Receive(client);
+                        receiveDone.WaitOne(timeout);
+                        if (response == "HELLO<EOF>")
+                        {
+                            Console.WriteLine("Found host at " + currentIP);
+                            serverIP = currentIP;
+                            return true;
+                        }
                     }
+                    client.Disconnect(true); 
+                    resetFlags();
+                    ipCore++;
+                }catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message); 
                 }
-                resetFlags(); 
-                ipCore++; 
             }
             return false; 
         }
@@ -264,7 +271,7 @@ namespace Sigma.Networking
         }
 
         //call to release the port 
-        private async void _shutdownAsync()
+        public async void _shutdownAsync()
         {
             try
             {

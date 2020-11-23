@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/lbl_connection"
                 android:gravity="center"
-                android:text="Channel 1"
+                android:text="Select Channel"
                 android:textColor="#F1ECEC"
                 android:textStyle="bold"
                 android:textSize="25dp"
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_below="@+id/lbl_connectionMeter"
-                android:paddingBottom="30dp">
+                android:paddingBottom="15dp">
                 <ImageView
                     android:id="@+id/connectionIndicator_1"
                     android:layout_width="wrap_content"
@@ -107,6 +107,14 @@
                     android:src="@drawable/connectionmeter_transition"
                     android:layout_margin="5dp"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/connectionTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@+id/connectionMeterLevel_Container"
+                android:textSize="15dp"
+                android:textColor="@android:color/white"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/buttonLayout"

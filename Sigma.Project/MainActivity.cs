@@ -70,41 +70,44 @@ namespace Sigma.Project
             connectionBar.Text = "Searching for host...";
 
             var connected = await Task.Run(clientService.StartClientAsync);
-            updateConnectionStatus(connected); 
+            updateConnectionStatus(connected);
             if (connected)
             {
-                connectionBar.Text = "Connected";
                 beginNetworkTesting();
-            }
-            else
-            {
-                connectionBar.Text = "Not Connected"; 
             }
         }
 
         private async Task beginNetworkTesting()
         {
             bool continueTest = true;
-            CultureInfo provider = CultureInfo.InvariantCulture; 
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            var connectionReadout = FindViewById<TextView>(Resource.Id.connectionTime);
+            int numFailures = 0; 
 
-            try
+            while (numFailures < 10)
             {
-                while (continueTest)
+                try
                 {
                     string serverResponse = await Task.Run(clientService.GetServerTimeAsync);
                     if (serverResponse != string.Empty && serverResponse != "ERROR")
                     {
-                        DateTime serverTime = DateTime.ParseExact(serverResponse, "MM/dd/yyyy hh:mm:ss.ffffff", provider); 
+                        DateTime now = DateTime.Now;
+                        DateTime serverTime = DateTime.ParseExact(serverResponse, "MM/dd/yyyy hh:mm:ss.ffffff", provider);
+                        int millisecondDiffernce = (now.Millisecond - serverTime.Millisecond)/100;
+                        connectionReadout.Text = millisecondDiffernce.ToString() + " ms";
                     }
                     else
                     {
-                        Console.WriteLine("Error message recieved from client"); 
+                        Console.WriteLine("Error message recieved from client");
                     }
+                    Thread.Sleep(250);
+                }catch(Exception ex)
+                {
+                    numFailures++; 
+                    Console.WriteLine(ex.Message); 
                 }
-            }catch(Exception ex)
-            {
-                Console.WriteLine("An error occured while requesting server time: " + ex.Message);
             }
+            updateConnectionStatus(false);
 
         }
 
@@ -116,43 +119,54 @@ namespace Sigma.Project
         //update the connection status bar on the UI with new text and new color
         async void updateConnectionStatusBar(object sender, EventArgs args)
         {
-            TextView connectionView = (TextView)FindViewById(Resource.Id.connectionStatus);
-            Drawable drawable = connectionView.Background; 
-            if (drawable.GetType() == typeof(TransitionDrawable))
-            {
-                if (!connectedTransitionStatus)
-                {
-                    ((TransitionDrawable)drawable).StartTransition(500); 
-                    connectedTransitionStatus = true;
-                    connectionView.Text = "Connected";
-                }
-                else
-                {
-                    ((TransitionDrawable)drawable).ReverseTransition(500);
-                    connectedTransitionStatus = false;
-                    connectionView.Text = "Disconnected";
-                }     
-            }
+            //TextView connectionView = (TextView)FindViewById(Resource.Id.connectionStatus);
+            //Drawable drawable = connectionView.Background; 
+            //if (drawable.GetType() == typeof(TransitionDrawable))
+            //{
+            //    if (!connectedTransitionStatus)
+            //    {
+            //        ((TransitionDrawable)drawable).StartTransition(500); 
+            //        connectedTransitionStatus = true;
+            //        connectionView.Text = "Connected";
+            //    }
+            //    else
+            //    {
+            //        ((TransitionDrawable)drawable).ReverseTransition(500);
+            //        connectedTransitionStatus = false;
+            //        connectionView.Text = "Disconnected";
+            //    }     
+            //}
+            beginSearchForHostAsync();
         }
 
         private void updateConnectionStatus(bool connected)
         {
-            TextView connectionView = (TextView)FindViewById(Resource.Id.connectionStatus);
+            TextView connectionView = FindViewById<TextView>(Resource.Id.connectionStatus);
+            TextView connectionMeter = FindViewById<TextView>(Resource.Id.connectionTime); 
             Drawable drawable = connectionView.Background;
             if (drawable.GetType() == typeof(TransitionDrawable))
             {
                 if (connected)
                 {
-                    ((TransitionDrawable)drawable).StartTransition(500);
-                    connectedTransitionStatus = true;
-                    connectionView.Text = "Connected";
+                    try
+                    {
+                        ((TransitionDrawable)drawable).StartTransition(500);
+                        connectedTransitionStatus = true;
+                        connectionView.Text = "Connected";
+                        connectionMeter.Visibility = Android.Views.ViewStates.Visible;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message); 
+                    }
                 }
                 else
                 {
                     ((TransitionDrawable)drawable).ReverseTransition(500);
                     connectedTransitionStatus = false;
                     connectionView.Text = "Disconnected";
-
+                    connectionMeter.Visibility = Android.Views.ViewStates.Invisible;
+                    clientService._shutdownAsync(); 
                 }
             }
         }
@@ -161,7 +175,7 @@ namespace Sigma.Project
         private void assignEventHandlers()
         {
             //FindViewById<Button>(Resource.Id.btn_connect).Click += OnConnectClicked; 
-            //FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar;
+            FindViewById<TextView>(Resource.Id.connectionStatus).Click += updateConnectionStatusBar;
             FindViewById<Button>(Resource.Id.connection_button1).Click += OnChennelSelect;
             FindViewById<Button>(Resource.Id.connection_button2).Click += OnChennelSelect;
             FindViewById<Button>(Resource.Id.connection_button3).Click += OnChennelSelect;
