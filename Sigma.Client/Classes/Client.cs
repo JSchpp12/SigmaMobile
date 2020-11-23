@@ -45,7 +45,9 @@ namespace Sigma.Networking
         private IPAddress currentAddress;
         private IPEndPoint remoteEP;
         private Socket client;
-        private static int timeout = 10000;
+        private static int timeout = 100000;
+        private bool validConnection = false;
+        private string serverIP = string.Empty;
 
         public bool IsConnected()
         {
@@ -102,44 +104,55 @@ namespace Sigma.Networking
                     if(response == "HELLO<EOF>")
                     {
                         Console.WriteLine("Found host at " + currentIP);
+                        serverIP = currentIP; 
                         return true;
                     }
                 }
+                resetFlags(); 
                 ipCore++; 
             }
             return false; 
         }
 
-        public async Task<String> GetServerTimeAsync()
+        public async Task<string> GetServerTimeAsync()
         {
-            Message message;
+            Message message; 
+            resetFlags(); 
 
+            //if the client is not connected, create a new connection
             if (!client.Connected)
             {
-                StartClientAsync(); 
+                await StartClientAsync(); 
             }
+
+            //establish new connection with server
+            currentAddress = IPAddress.Parse(serverIP);
+            remoteEP = new IPEndPoint(currentAddress, port);
+            client = new Socket(currentAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            //connect to the remote endpoint
+            client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
+            Thread.Sleep(50);
 
             //send request
             Send(client, "REQUEST:TIME");
+            sendDone.WaitOne(timeout); 
             //read response
             Receive(client);
             receiveDone.WaitOne(timeout);
+            Console.WriteLine("Message recieved from server: " + response);
+            return response; 
+
             //convert messsage into a DateTime 
-            message = new Message(response); 
-            if (message.IsValid() && message.IsTime())
-            {
-                return response;
-            }
-            else
-            {
-                return "ERROR"; 
-            }
+            //message = new Message(response); 
+            //if (message.IsValid() && message.IsTime())
+            //{
+            //    return response;
+            //}
+            //else
+            //{
+            //    return "ERROR"; 
+            //}
         }
-
-        //private async Task<bool> WaitForResponseAsync()
-        //{
-
-        //}
 
         private static void ConnectCallback(IAsyncResult ar)
         {
@@ -197,7 +210,7 @@ namespace Sigma.Networking
                 {
                     // There might be more data, so store the data received so far.  
                     state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
-
+                    
                     // Get the rest of the data.  
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                         new AsyncCallback(ReceiveCallback), state);
@@ -263,6 +276,14 @@ namespace Sigma.Networking
                 Console.WriteLine(ex.Message);
             }
         }
+
+        private void resetFlags()
+        {
+            response = string.Empty;
+            connectDone = new ManualResetEvent(false);
+            sendDone = new ManualResetEvent(false);
+            receiveDone = new ManualResetEvent(false);
+    }
 
         internal static Int64 AddressToInt(IPAddress addr)
         {

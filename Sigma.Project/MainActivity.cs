@@ -14,6 +14,7 @@ using Java.Nio.Channels;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Support.Design.Animation;
+using System.Globalization;
 
 namespace Sigma.Project
 {
@@ -73,11 +74,43 @@ namespace Sigma.Project
             if (connected)
             {
                 connectionBar.Text = "Connected";
+                beginNetworkTesting();
             }
             else
             {
                 connectionBar.Text = "Not Connected"; 
             }
+        }
+
+        private async Task beginNetworkTesting()
+        {
+            bool continueTest = true;
+            CultureInfo provider = CultureInfo.InvariantCulture; 
+
+            try
+            {
+                while (continueTest)
+                {
+                    string serverResponse = await Task.Run(clientService.GetServerTimeAsync);
+                    if (serverResponse != string.Empty && serverResponse != "ERROR")
+                    {
+                        DateTime serverTime = DateTime.ParseExact(serverResponse, "MM/dd/yyyy hh:mm:ss.ffffff", provider); 
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error message recieved from client"); 
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine("An error occured while requesting server time: " + ex.Message);
+            }
+
+        }
+
+        private async Task<int> testConnection()
+        {
+            return 0; 
         }
 
         //update the connection status bar on the UI with new text and new color
@@ -119,9 +152,9 @@ namespace Sigma.Project
                     ((TransitionDrawable)drawable).ReverseTransition(500);
                     connectedTransitionStatus = false;
                     connectionView.Text = "Disconnected";
+
                 }
             }
-            
         }
 
         //go through each page element and give it an eventhandler if applicable
